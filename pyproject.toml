@@ -15,6 +15,9 @@ dependencies = [
     "easydict>=1.13",
     "matplotlib==3.9.2",
     "seaborn>=0.13.2",
+    "opensearch-py==3.0.0",
+    "opensearch-py[async]>=2.0.0",
+    "gnn",
 ]
 
 [project.optional-dependencies]
@@ -32,3 +35,6 @@ dev-dependencies = [
     "ruff==0.9.9",
     "pre-commit>=4.0,<5.0",
 ]
+
+[tool.uv.sources]
+gnn = { git = "https://github.com/bohyunshin/gnn.git", rev = "v1.0.0" }
