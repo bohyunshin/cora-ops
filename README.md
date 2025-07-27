@@ -46,3 +46,11 @@ pre-commit install
 ## Architecture
 
 (TBD): It will consist of vectorDB, API server and Airflow.
+
+## How to run
+
+After running below command, all the required components on MLOps start running, managed by `docker-compose.yml`.
+
+```shell
+$ make run
+```
