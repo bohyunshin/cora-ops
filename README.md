@@ -66,7 +66,7 @@ graph TB
         end
 
         %% Future Component
-        Airflow[(Planned) Airflow Training Pipeline]
+        Airflow[Airflow Planned Training Pipeline]
     end
 
     %% Data Flow
