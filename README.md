@@ -123,6 +123,7 @@ graph TB
 
 ```
 cora-ops/
+├── pretrained_weight/gcn/            # Pretrained torch weight
 ├── src/                              # Source code directory
 │   ├── api/                          # FastAPI application
 │   └── db/                           # Opensearch application
