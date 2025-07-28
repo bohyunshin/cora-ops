@@ -24,6 +24,9 @@ COPY src/ ./src/
 # Copy pretrained weights
 COPY pretrained_weight/ ./pretrained_weight/
 
+# Expose port for FastAPI
+EXPOSE 8000
+
 COPY docker-entrypoint.sh .
 
 # Make entrypoint script executable

@@ -54,3 +54,13 @@ After running below command, all the required components on MLOps start running,
 ```shell
 $ make run
 ```
+
+### Check logs for each container
+
+Go to the project root.
+
+```bash
+$ docker-compose logs fastapi-server
+$ docker-compose logs python-app
+$ docker-compose logs opensearch-dashboards
+```

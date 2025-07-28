@@ -9,7 +9,6 @@ from opensearchpy import AsyncOpenSearch
 from src.db.libs.opensearch import (
     create_predictions_index,
     save_predictions_to_opensearch,
-    query_predictions,
     wait_for_opensearch,
 )
 from src.db.libs.model import generate_prediction
@@ -77,21 +76,13 @@ async def main():
             client, predictions, index_name
         )
 
-        if success_count > 0:
-            # Refresh index to make documents searchable
-            await client.indices.refresh(index=index_name)
-            logger.info("Refreshed index")
+        logger.info(f"Index name: {index_name}")
+        logger.info(f"Total records: {success_count} / Target records: 2708")
 
-            # Run sample queries
-            await query_predictions(client, index_name)
-
-            logger.info("Prediction data processing completed successfully!")
-            logger.info("View your data at: http://localhost:5601")
-            logger.info(f"Index name: {index_name}")
-            logger.info(f"Total records: {success_count}")
-        else:
-            logger.error("No data was successfully indexed.")
-
+    except Exception as e:
+        logger.error(
+            f"Unexpected error while indexing prediction results to opensearch: {e}"
+        )
     finally:
         # Always close the client connection
         await client.close()
