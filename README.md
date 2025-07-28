@@ -45,17 +45,112 @@ pre-commit install
 
 ## Architecture
 
-(TBD): It will consist of vectorDB, API server and Airflow.
+```mermaid
+graph TB
+    subgraph "Client Layer"
+        Client[Client Applications]
+        API_Client[API Clients]
+    end
 
-## How to run
+    subgraph "API Gateway"
+        FastAPI[FastAPI Server<br/>:8000]
+    end
+
+    subgraph "ML Processing Layer"
+        PythonApp[Python ML App<br/>Semi-supervised Models]
+        ModelStore[Model Storage<br/>Trained GNN Models]
+    end
+
+    subgraph "Data Layer"
+        OpenSearch[OpenSearch<br/>Vector Database<br/>:9200]
+        Dashboard[OpenSearch Dashboards<br/>:5601]
+    end
+
+    subgraph "Orchestration Layer"
+        Airflow[Apache Airflow<br/>Pipeline Orchestration<br/>(Planned)]
+    end
+
+    subgraph "Infrastructure"
+        Docker[Docker Compose<br/>Container Orchestration]
+        Network[Docker Network<br/>cora-ops-network]
+    end
+
+    Client --> FastAPI
+    API_Client --> FastAPI
+    FastAPI --> PythonApp
+    FastAPI --> OpenSearch
+    PythonApp --> ModelStore
+    PythonApp --> OpenSearch
+    OpenSearch --> Dashboard
+    Airflow -.-> PythonApp
+    Airflow -.-> OpenSearch
+
+    Docker --> FastAPI
+    Docker --> PythonApp
+    Docker --> OpenSearch
+    Docker --> Dashboard
+
+    Network --> FastAPI
+    Network --> PythonApp
+    Network --> OpenSearch
+    Network --> Dashboard
+```
+
+## Component Relationships
+
+### Core Components
+
+| Component | Port | Purpose | Dependencies |
+|-----------|------|---------|--------------|
+| **FastAPI Server** | 8000 | REST API for model inference and data access | Python App, OpenSearch |
+| **Python ML App** | - | Semi-supervised model inference | OpenSearch |
+| **OpenSearch** | 9200 | Vector database for embeddings and search | - |
+| **OpenSearch Dashboards** | 5601 | Data visualization and monitoring | OpenSearch |
+
+### Data Flow
+
+1. **Training Pipeline**: We assume that we already trained ML models, which are stored in `pretrained_weight/`
+2. **Inference Pipeline**: Docker compose up → Python ML App → Model Prediction → Store to Opensearch
+3. **Search Pipeline**: Client request → FastAPI → OpenSearch → Search Results → Response
+4. **Monitoring**: All services → OpenSearch Dashboards → Metrics & Visualizations
+
+## Project Directory Structure
+
+```
+cora-ops/
+├── src/                              # Source code directory
+│   ├── api/                          # FastAPI application
+│   └── db/                           # Opensearch application
+# End of structure
+```
+
+## Running Applications
+
+### 1. Start all services
 
 After running below command, all the required components on MLOps start running, managed by `docker-compose.yml`.
 
 ```shell
 $ make run
+
+# or directly with docker-compose
+$ docker-compose up -d
 ```
 
-### Check logs for each container
+### 2. Verify services are running
+
+```bash
+# Check FastAPI server
+curl http://localhost:8000/health
+
+# Check OpenSearch
+curl http://localhost:9200/_cluster/health
+
+# Access OpenSearch Dashboards
+# Open http://localhost:5601 in your browser
+```
+
+### 3. View service logs
 
 Go to the project root.
 
@@ -64,3 +159,7 @@ $ docker-compose logs fastapi-server
 $ docker-compose logs python-app
 $ docker-compose logs opensearch-dashboards
 ```
+
+## Note
+
+Refer to the each `README.md` file for each db, api service for more details.
