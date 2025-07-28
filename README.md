@@ -53,26 +53,26 @@ graph TB
     end
 
     subgraph "API Gateway"
-        FastAPI[FastAPI Server<br/>:8000]
+        FastAPI["FastAPI Server<br/>Port: 8000"]
     end
 
     subgraph "ML Processing Layer"
-        PythonApp[Python ML App<br/>Semi-supervised Models]
-        ModelStore[Model Storage<br/>Trained GNN Models]
+        PythonApp["Python ML App<br/>Semi-supervised Models"]
+        ModelStore["Model Storage<br/>Pretrained GNN Models"]
     end
 
     subgraph "Data Layer"
-        OpenSearch[OpenSearch<br/>Vector Database<br/>:9200]
-        Dashboard[OpenSearch Dashboards<br/>:5601]
+        OpenSearch["OpenSearch<br/>Vector Database<br/>Port: 9200"]
+        Dashboard["OpenSearch Dashboards<br/>Port: 5601"]
     end
 
     subgraph "Orchestration Layer"
-        Airflow[Apache Airflow<br/>Pipeline Orchestration<br/>(Planned)]
+        Airflow["Apache Airflow<br/>Pipeline Orchestration<br/>Planned"]
     end
 
     subgraph "Infrastructure"
-        Docker[Docker Compose<br/>Container Orchestration]
-        Network[Docker Network<br/>cora-ops-network]
+        Docker["Docker Compose<br/>Container Orchestration"]
+        Network["Docker Network<br/>cora-ops-network"]
     end
 
     Client --> FastAPI
