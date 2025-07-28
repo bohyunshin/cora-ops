@@ -108,7 +108,7 @@ graph TB
 | Component | Port | Purpose | Dependencies |
 |-----------|------|---------|--------------|
 | **FastAPI Server** | 8000 | REST API for model inference and data access | Python App, OpenSearch |
-| **Python ML App** | - | Semi-supervised model inference | OpenSearch |
+| **Python ML App** | - | Semi-supervised model (Currently, supports GCN only) inference | OpenSearch |
 | **OpenSearch** | 9200 | Vector database for embeddings and search | - |
 | **OpenSearch Dashboards** | 5601 | Data visualization and monitoring | OpenSearch |
 
@@ -120,6 +120,8 @@ graph TB
 4. **Monitoring**: All services → OpenSearch Dashboards → Metrics & Visualizations
 
 ## Project Directory Structure
+
+If you are interested what consists of `*.pt` in `pretrained_weight/gcn`, refer to [this code line](https://github.com/bohyunshin/gnn/blob/main/gnn/train.py#L184-L198) in gnn package.
 
 ```
 cora-ops/
