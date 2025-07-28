@@ -47,53 +47,58 @@ pre-commit install
 
 ```mermaid
 graph TB
-    subgraph "Client Layer"
-        Client[Client Applications]
-        API_Client[API Clients]
+    %% External Components
+    Client[Client Applications]
+    PretrainedWeights[Pretrained Model Weights]
+
+    %% Main Services
+    subgraph DockerNet[Docker Network opensearch-net]
+        %% FastAPI Service
+        FastAPI[FastAPI Server Port 8000]
+
+        %% Python ML App
+        PythonApp[Python ML App Prediction Processing]
+
+        %% OpenSearch Stack
+        subgraph OpenSearchStack[OpenSearch Stack]
+            OpenSearch[OpenSearch Port 9200]
+            Dashboard[OpenSearch Dashboards Port 5601]
+        end
+
+        %% Future Component
+        Airflow[Airflow Planned Training Pipeline]
     end
 
-    subgraph "API Gateway"
-        FastAPI["FastAPI Server<br/>Port: 8000"]
-    end
+    %% Data Flow
+    Client -->|HTTP Requests| FastAPI
+    FastAPI -->|Search Queries| OpenSearch
+    FastAPI -->|Retrieve Results| OpenSearch
 
-    subgraph "ML Processing Layer"
-        PythonApp["Python ML App<br/>Semi-supervised Models"]
-        ModelStore["Model Storage<br/>Pretrained GNN Models"]
-    end
+    PythonApp -->|Store Predictions| OpenSearch
+    PythonApp -->|Load Model| PretrainedWeights
 
-    subgraph "Data Layer"
-        OpenSearch["OpenSearch<br/>Vector Database<br/>Port: 9200"]
-        Dashboard["OpenSearch Dashboards<br/>Port: 5601"]
-    end
+    Dashboard -->|Monitor Data| OpenSearch
 
-    subgraph "Orchestration Layer"
-        Airflow["Apache Airflow<br/>Pipeline Orchestration<br/>Planned"]
-    end
+    %% Future Pipeline
+    Airflow -.->|Train Models| PretrainedWeights
+    Airflow -.->|Store Results| OpenSearch
 
-    subgraph "Infrastructure"
-        Docker["Docker Compose<br/>Container Orchestration"]
-        Network["Docker Network<br/>cora-ops-network"]
-    end
+    %% Health Checks & Dependencies
+    FastAPI -.->|Depends on| OpenSearch
+    FastAPI -.->|Depends on| PythonApp
+    PythonApp -.->|Depends on| OpenSearch
+    Dashboard -.->|Depends on| OpenSearch
 
-    Client --> FastAPI
-    API_Client --> FastAPI
-    FastAPI --> PythonApp
-    FastAPI --> OpenSearch
-    PythonApp --> ModelStore
-    PythonApp --> OpenSearch
-    OpenSearch --> Dashboard
-    Airflow -.-> PythonApp
-    Airflow -.-> OpenSearch
+    %% Styling
+    classDef service fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    classDef storage fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    classDef planned fill:#fff3e0,stroke:#e65100,stroke-width:2px,stroke-dasharray: 5 5
+    classDef external fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px
 
-    Docker --> FastAPI
-    Docker --> PythonApp
-    Docker --> OpenSearch
-    Docker --> Dashboard
-
-    Network --> FastAPI
-    Network --> PythonApp
-    Network --> OpenSearch
-    Network --> Dashboard
+    class FastAPI,PythonApp,Dashboard service
+    class OpenSearch,PretrainedWeights storage
+    class Airflow planned
+    class Client external
 ```
 
 ## Component Relationships
