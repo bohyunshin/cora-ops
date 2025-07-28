@@ -17,12 +17,17 @@ dependencies = [
     "seaborn>=0.13.2",
     "opensearch-py==3.0.0",
     "opensearch-py[async]>=2.0.0",
+    "fastapi>=0.104.0",
+    "uvicorn[standard]>=0.24.0",
+    "pydantic>=2.5.0",
     "gnn",
+    "httpx>=0.28.1",
 ]
 
 [project.optional-dependencies]
 dev = [
     "pytest==8.3.3",
+    "pytest-asyncio~=0.25.3",
     "pytest-cov==6.0.0",
     "ruff==0.9.9",
     "pre-commit>=4.0,<5.0",
